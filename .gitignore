@@ -1,0 +1,5 @@
+node_modules/
+package-lock.json
+
+# Assume you have your own assets
+assets/
