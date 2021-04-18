@@ -1,24 +1,41 @@
 const express = require("express");
 const fs = require("fs");
+const path = require('path');
 const srt2vtt = require('srt-to-vtt')
+const ass2vtt = require('ass-to-vtt')
 
 // set the view engine to ejs
 const app = express();
 app.set('view engine', 'ejs');
 
 function encodeAllSRTFiles() {
-    const filename = 'qianqiuep4'
+    const directoryPath = 'assets/'
+    fs.readdir(directoryPath, function (err, files) {
+        if (err) {
+            return console.log('Unable to scan directory: ' + err);
+        }
+        files.forEach(function (filename) {
+            try {
+                const { name, ext } = path.parse(filename);
 
-    try {
-        fs.createReadStream('assets/' + filename + '.srt')
-            .pipe(srt2vtt())
-            .pipe(fs.createWriteStream('assets/' + filename + '.vtt'))
-
-
-        console.log(`Written ${'assets/' + filename}.vtt!`)
-    } catch (e) {
-        console.error(e)
-    }
+                if (ext === '.ass') {
+                    fs.createReadStream('assets/' + filename)
+                        .pipe(ass2vtt())
+                        .pipe(fs.createWriteStream('assets/' + name + '.vtt'))
+                    console.log(`Written ${'assets/' + name}.vtt!`)
+                } else if (ext === '.srt') {
+                    fs.createReadStream('assets/' + filename)
+                        .pipe(srt2vtt())
+                        .pipe(fs.createWriteStream('assets/' + name + '.vtt'))
+                    console.log(`Written ${'assets/' + name}.vtt!`)
+                } else {
+                    console.log('File:', filename)
+                }
+            } catch (e) {
+                console.error(e)
+            }
+        });
+    });
 }
 
 encodeAllSRTFiles()
