@@ -88,28 +88,6 @@
             debug.insertAdjacentHTML('beforeend', `<li> ${text.map(i => JSON.stringify(i).slice(1, -1)).join(' ')} </li>`);
         }
 
-        document.addEventListener("visibilitychange", function () {
-            if (document.visibilityState === "hidden") {
-                setTimeout(() => {
-                    player.play()
-                }, 100)
-            }
-        })
-
-        function handleVisibilityChange() {
-            if (document.webkitHidden) {
-                activeCueText = "Screen locked"
-                refreshNotification()
-            } else {
-                activeCueText = "Screen not locked"
-                refreshNotification()
-            }
-            debug("webkit!", activeCueText)
-
-        }
-
-        document.addEventListener("webkitvisibilitychange", handleVisibilityChange, false);
-
         window.onload = (event) => {
             console.log('page is fully loaded');
 
