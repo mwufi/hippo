@@ -15,6 +15,7 @@
         <source src="/video/<%= videoname %>" type="video/mp4" />
         <track kind="captions" src="/captions/<%= videoname %>" srclang="en" label="English" default>
     </video>
+    <ul id="debug"></ul>
 
     <script src="https://vjs.zencdn.net/7.11.4/video.min.js"></script>
     <script>
@@ -81,6 +82,29 @@
                 console.log("mediaSession not in navigator")
             }
         }
+
+        function debug(...text) {
+            let debug = document.querySelector('#debug');
+            debug.insertAdjacentHTML('beforeend', `<li> ${text.map(i => JSON.stringify(i).slice(1, -1)).join(' ')} </li>`);
+        }
+
+        document.addEventListener("visibilitychange", function () {
+            debug('visibilitychange:', document.visibilityState);
+        })
+
+        function handleVisibilityChange() {
+            if (document.webkitHidden) {
+                activeCueText = "Screen locked"
+                refreshNotification()
+            } else {
+                activeCueText = "Screen not locked"
+                refreshNotification()
+            }
+            debug("webkit!", activeCueText)
+
+        }
+
+        document.addEventListener("webkitvisibilitychange", handleVisibilityChange, false);
 
         window.onload = (event) => {
             console.log('page is fully loaded');
