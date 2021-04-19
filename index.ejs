@@ -89,7 +89,11 @@
         }
 
         document.addEventListener("visibilitychange", function () {
-            debug('visibilitychange:', document.visibilityState);
+            if (document.visibilityState === "hidden") {
+                setTimeout(() => {
+                    player.play()
+                }, 100)
+            }
         })
 
         function handleVisibilityChange() {
