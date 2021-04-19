@@ -13,11 +13,97 @@
     <video id="example_video_1" class="video-js" controls preload="auto" width="640" height="264"
         data-setup='{"example_option":true}'>
         <source src="/video/<%= videoname %>" type="video/mp4" />
-        <track kind="captions" src="/captions/<%= videoname %>" srclang="en" label="English"
-            default>
+        <track kind="captions" src="/captions/<%= videoname %>" srclang="en" label="English" default>
     </video>
 
     <script src="https://vjs.zencdn.net/7.11.4/video.min.js"></script>
+    <script>
+        let activeCueText = "";
+        let player;
+        let skipTime = 10;
+
+        function addLiveText() {
+            // Get all text tracks for the current player.
+            var tracks = player.textTracks();
+            var metadataTrack = tracks[0];
+
+            // Add a listener for the "cuechange" event and start ad playback.
+            metadataTrack.addEventListener('cuechange', function (e) {
+                if (metadataTrack.activeCues[0]?.text) {
+                    activeCueText = metadataTrack.activeCues[0]?.text;
+                    console.log(activeCueText)
+                    refreshNotification()
+                }
+            });
+
+        }
+
+        function refreshNotification() {
+
+            navigator.mediaSession.metadata = new MediaMetadata({
+                title: activeCueText,
+                artist: "Rick Astley",
+                album: "<%= videoname %>",
+                artwork: [
+                    { src: 'https://via.placeholder.com/96', sizes: '96x96', type: 'image/png' },
+                    { src: 'https://via.placeholder.com/128', sizes: '128x128', type: 'image/png' },
+                    { src: 'https://via.placeholder.com/192', sizes: '192x192', type: 'image/png' },
+                    { src: 'https://via.placeholder.com/256', sizes: '256x256', type: 'image/png' },
+                    { src: 'https://via.placeholder.com/384', sizes: '384x384', type: 'image/png' },
+                    { src: 'https://via.placeholder.com/512', sizes: '512x512', type: 'image/png' },
+                ]
+            });
+        }
+        function addNotification() {
+            if ("mediaSession" in navigator) {
+                refreshNotification()
+                navigator.mediaSession.setActionHandler('play', function () {
+                    player.play()
+                    console.log("you pressed play")
+                });
+                navigator.mediaSession.setActionHandler('pause', function () {
+                    player.pause()
+                    console.log("you pressed pause")
+                });
+                navigator.mediaSession.setActionHandler('stop', function () { /* Code excerpted. */ });
+                navigator.mediaSession.setActionHandler('seekbackward', function () {
+                    player.currentTime(Math.max(player.currentTime() - skipTime,
+                        0));
+                    console.log("Seek backward")
+                    console.log(`Current time: ${player.currentTime()}`)
+                });
+                navigator.mediaSession.setActionHandler('seekforward', function () {
+                    player.currentTime(Math.min(player.currentTime() + skipTime,
+                        player.duration()));
+                    console.log("Seek forward")
+                    console.log(`Current time: ${player.currentTime()}`)
+                });
+                navigator.mediaSession.setActionHandler('seekto', function (e) {
+                    const seekTime = Math.min(Math.max(e.seekTime, 0), player.duration())
+                    player.currentTime(seekTime)
+                    console.log("Seek to:")
+                    console.log(`Current time: ${player.currentTime()}`)
+                });
+                navigator.mediaSession.setActionHandler('previoustrack', function () { /* Code excerpted. */ });
+                navigator.mediaSession.setActionHandler('nexttrack', function () { /* Code excerpted. */ });
+            } else {
+                console.log("mediaSession not in navigator")
+            }
+        }
+
+        window.onload = (event) => {
+            console.log('page is fully loaded');
+
+            player = videojs('example_video_1');
+
+            // After media (video or audio) starts playing
+            const video = document.querySelector("video");
+
+            video.addEventListener('play', addNotification)
+            video.addEventListener('play', addLiveText);
+        };
+
+    </script>
 </body>
 
 </html>
