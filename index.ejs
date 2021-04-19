@@ -91,12 +91,10 @@
         window.onload = (event) => {
             console.log('page is fully loaded');
 
-            player = videojs('example_video_1', {
-                fluid: true
-            });
+            player = videojs('example_video_1');
 
             // make a square video
-            player.aspectRatio('1:1');
+            player.aspectRatio('3:4');
 
             // After media (video or audio) starts playing
             const video = document.querySelector("video");
