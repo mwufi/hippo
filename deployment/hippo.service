@@ -5,8 +5,9 @@ StartLimitIntervalSec=0
 
 [Service]
 Type=forking
+WorkingDirectory=/opt/bitnami/projects/hippo
 Environment="PATH=/home/bitnami/bin:/home/bitnami/bin:/opt/bitnami/apache/bin:/opt/bitnami/apache2/bin:/opt/bitnami/common/bin:/opt/bitnami/git/bin:/opt/bitnami/gonit/bin:/opt/bitnami/node/bin:/opt/bitnami/python/bin:/opt/bitnami/redis/bin:/opt/bitnami/nami/bin:/opt/bitnami/apache/bin:/opt/bitnami/apache2/bin:/opt/bitnami/common/bin:/opt/bitnami/git/bin:/opt/bitnami/gonit/bin:/opt/bitnami/node/bin:/opt/bitnami/python/bin:/opt/bitnami/redis/bin:/opt/bitnami/nami/bin:/usr/local/bin"
-ExecStart=/opt/bitnami/node/bin/forever start --pidFile=/opt/bitnami/projects//forever.pid /opt/bitnami/projects/hippo/server.js
+ExecStart=/opt/bitnami/node/bin/forever start --pidFile=/opt/bitnami/projects/forever.pid /opt/bitnami/projects/hippo/server.js
 ExecStop=/opt/bitnami/node/bin/forever stop /opt/bitnami/projects/hippo/server.js
 PIDFile=/opt/bitnami/projects/forever.pid
 User=bitnami
