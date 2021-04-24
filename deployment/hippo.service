@@ -1,0 +1,14 @@
+[Unit]
+Description=forever demo service
+After=network.target
+StartLimitIntervalSec=0
+
+[Service]
+Restart=always
+RestartSec=1
+User=bitnami
+ExecStart=/opt/bitnami/node/bin/forever start /opt/bitnami/projects/hippo/server.js
+ExecStop=/opt/bitnami/node/bin/forever stop /opt/bitnami/projects/hippo/server.js
+
+[Install]
+WantedBy=multi-user.target
